@@ -3,18 +3,16 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "sindhu/medicalstore"
-        ECR_REPO   = "944731154859.dkr.ecr.us-east-1.amazonaws.com/ecr-repo"
-        REGION     = "us-east-1"
-        AWS_CLI    = "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe"
-        TERRAFORM  = "C:\\terraform_1.13.3_windows_386\\terraform.exe"
+        IMAGE_NAME = "ecr1"
+        ECR_REPO   = "944731154859.dkr.ecr.eu-north-1.amazonaws.com/ecr1"
+        REGION     = "eu-north-1"
     }
 
     stages {
         stage('Clone Repository') {
             steps {
                 echo '📦 Cloning repository...'
-                git branch: 'main', url: 'https://github.com/SindhuManga/MedicalStore.git'
+                git branch: 'main', url: 'https://github.com/SindhuManga/EC2.git'
             }
         }
 
@@ -40,24 +38,13 @@ pipeline {
             }
         }
 
-        stage('Deploy with Terraform') {
-            steps {
-                echo '🏗️ Deploying EC2 instance and running Docker container...'
-                withCredentials([usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    dir('terraform') {
-                        bat """
-                        set AWS_ACCESS_KEY_ID=%AWS_ACCESS_KEY_ID%
-                        set AWS_SECRET_ACCESS_KEY=%AWS_SECRET_ACCESS_KEY%
-                        "%TERRAFORM%" init
-                        "%TERRAFORM%" apply -auto-approve
-                        """
-                    }
+        
                 }
             }
-        }
+        
 
         
-    }
+    
 
     post {
         success {
